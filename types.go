@@ -33,7 +33,7 @@ type String string
 func (s String) Interpolate(resolver Resolver) (string, error) {
 	if interpolationAnchoredRegex.MatchString(string(s)) {
 		var dst string
-		if err := Var(s).InterpolateInto(resolver, &dst); err != nil {
+		if err := Var(stripParens(string(s))).InterpolateInto(resolver, &dst); err != nil {
 			return "", err
 		}
 		return dst, nil
