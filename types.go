@@ -1,7 +1,6 @@
 package interpolate
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
 	"reflect"
@@ -50,7 +49,7 @@ func (s String) Interpolate(resolver Resolver) (string, error) {
 		}
 
 		switch val := val.(type) {
-		case string, json.Number, bool:
+		case string, float64, bool:
 			return fmt.Sprint(val)
 		default:
 			merr = multierror.Append(merr, errInvalidTypeForInterpolation(reflect.TypeOf(val)))
@@ -88,9 +87,7 @@ func (v Var) InterpolateInto(resolver Resolver, dst interface{}) error {
 	if err != nil {
 		return err
 	}
-	dec := json.NewDecoder(bytes.NewReader(payload))
-	dec.UseNumber()
-	if err := dec.Decode(&dst); err != nil {
+	if err := json.Unmarshal(payload, &dst); err != nil {
 		return err
 	}
 	return nil
