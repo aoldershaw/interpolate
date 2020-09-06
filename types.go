@@ -28,6 +28,12 @@ type Resolver interface {
 	Resolve(varName string) (interface{}, error)
 }
 
+type ResolverFunc func(string) (interface{}, error)
+
+func (f ResolverFunc) Resolve(varName string) (interface{}, error) {
+	return f(varName)
+}
+
 type String string
 
 func (s String) Interpolate(resolver Resolver) (string, error) {
